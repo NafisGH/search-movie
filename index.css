@@ -19,7 +19,11 @@ body {
     padding: 5px;
     background: #0094FF;
     border: none;
+}
 
+.btn-search:hover {
+    cursor: pointer;
+    opacity: 0.5;
 }
 .btn-search_black {
     background: #000;
