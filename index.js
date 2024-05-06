@@ -1,17 +1,31 @@
 const inputSerch = document.querySelector(".js-input-serch");
 const btnSearch = document.querySelector(".js-btn-search");
 const moviesList = document.querySelector(".js-movies-list");
+const moviesListNode = document.querySelector(".js-movies-list");
 
 btnSearch.addEventListener("click", getMovie);
 
 function getMovie() {
-  const nameMovie = inputSerch.value;
+  const nameMovie = inputSerch.value.trim();
 
+  if (!nameMovie) {
+    alert("Введите название фильма");
+    return;
+  }
+
+  fetchSearchMovie(nameMovie);
+
+  afterSearch();
+  inputSerch.value = "";
+}
+
+moviesListNode.addEventListener("click", handelClickMovie);
+
+function fetchSearchMovie(nameMovie) {
   fetch(`https://www.omdbapi.com/?s=${nameMovie}&apikey=f7c7b9db`)
     .then((data) => data.json())
     .then((movie) => {
       const movies = movie.Search;
-      console.log(movie.Search);
 
       moviesList.innerHTML = "";
 
@@ -49,39 +63,38 @@ function getMovie() {
 
         movieElement.appendChild(wrapperMovieDiscription);
         moviesList.appendChild(movieElement);
+        return moviesList;
       });
     })
     .catch((error) => {
       console.error("Ошибка при загрузке фильма", error);
     });
-  afterSearch();
-  inputSerch.value = "";
 }
-
-const moviesListNode = document.querySelector(".js-movies-list");
-
-moviesListNode.addEventListener("click", handelClickMovie);
 
 function handelClickMovie(event) {
   const clickedMovie = event.target.closest(".movie-elem");
-  console.log(clickedMovie);
   if (clickedMovie) {
     const imdbId = clickedMovie.dataset.imdbid;
-    fetch(`https://www.omdbapi.com/?i=${imdbId}&apikey=f7c7b9db`)
+    const movieUrl = `https://www.omdbapi.com/?i=${imdbId}&apikey=f7c7b9db`;
+
+    const newWindow = window.open("", "_blank");
+    fetch(movieUrl)
       .then((response) => {
         return response.json();
       })
       .then((data) => {
         let clickedMovieData = data;
-        console.log(clickedMovieData);
-        renderMivieImdbId(clickedMovieData);
+        renderMivieImdbId(clickedMovieData, newWindow);
+      })
+      .catch((error) => {
+        console.error("Ошибка при загрузке фильма", error);
+        window.close();
       });
   }
 }
 
-function renderMivieImdbId(clickedMovieData) {
-  console.log(clickedMovieData);
-  moviesList.innerHTML = "";
+function renderMivieImdbId(clickedMovieData, window) {
+  // moviesList.innerHTML = "";
   const wrapperDescriptionFilm = document.createElement("div");
 
   const actors = document.createElement("p");
@@ -139,7 +152,9 @@ function renderMivieImdbId(clickedMovieData) {
   poster.src = `${clickedMovieData.Poster}`;
   wrapperDescriptionFilm.append(poster);
 
-  moviesList.append(wrapperDescriptionFilm);
+  // moviesList.append(wrapperDescriptionFilm);
+
+  window.document.body.append(wrapperDescriptionFilm)
 }
 
 function afterSearch() {
