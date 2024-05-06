@@ -77,7 +77,7 @@ function handelClickMovie(event) {
     const imdbId = clickedMovie.dataset.imdbid;
     const movieUrl = `https://www.omdbapi.com/?i=${imdbId}&apikey=f7c7b9db`;
 
-    const newWindow = window.open("", "_blank");
+    const newWindow = window.open("", "_blank"); // открывает в новом окне браузера
     fetch(movieUrl)
       .then((response) => {
         return response.json();
@@ -94,7 +94,6 @@ function handelClickMovie(event) {
 }
 
 function renderMivieImdbId(clickedMovieData, window) {
-  // moviesList.innerHTML = "";
   const wrapperDescriptionFilm = document.createElement("div");
 
   const actors = document.createElement("p");
@@ -151,8 +150,6 @@ function renderMivieImdbId(clickedMovieData, window) {
   poster.classList.add("poster");
   poster.src = `${clickedMovieData.Poster}`;
   wrapperDescriptionFilm.append(poster);
-
-  // moviesList.append(wrapperDescriptionFilm);
 
   window.document.body.append(wrapperDescriptionFilm)
 }
